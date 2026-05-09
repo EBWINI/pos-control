@@ -9,45 +9,56 @@
         body { background-color: #f4f7f6; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         .card { border-radius: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-top: 20px; }
         .btn-custom { width: 100%; margin-bottom: 10px; padding: 15px; font-size: 1.1rem; font-weight: bold; }
+        #main-content { display: none; } /* إخفاء المحتوى حتى يتم إدخال الباسورد */
     </style>
 </head>
 <body>
 
-<div class="container text-center">
+<!-- واجهة الحماية -->
+<script>
+    const password = prompt("أدخل كلمة المرور للتحكم:");
+    if (password === "1984") { // غير الرقم هنا للباسورد اللي بدك اياه
+        alert("أهلاً بك يا محمود");
+    } else {
+        alert("كلمة مرور خاطئة!");
+        window.location.href = "https://www.google.com"; // تحويله لمكان ثاني إذا غلط
+    }
+</script>
+
+<div class="container text-center" id="main-content" style="display: block;">
     <div class="card p-4">
         <h2 class="mb-4 text-primary">لوحة تحكم POS</h2>
         <hr>
         
-        <h5 class="mb-3">قيمة الخصم (val)</h5>
-        <button class="btn btn-danger btn-custom" onclick="updatePrice('val', 0)">تصفير الخصم (0)</button>
-        <button class="btn btn-warning btn-custom" onclick="updatePrice('val', 0.6)">تفعيل خصم 40% (0.6)</button>
-        <button class="btn btn-success btn-custom" onclick="updatePrice('val', 1)">السعر كامل (1.0)</button>
+        <h5 class="mb-3">خصم المستودع و الفواتير</h5>
+        <button class="btn btn-danger btn-custom" onclick="updatePrice('val', 0)">ايقاف الخصم</button>
+             <button class="btn btn-success btn-custom" onclick="updatePrice('val', 1)">تفعيل الخصم</button>
         
         <hr>
         
-        <h5 class="mb-3">القيمة الثانية (val2)</h5>
-        <button class="btn btn-outline-danger btn-custom" onclick="updatePrice('val2', 0)">تصفير القيمة (0)</button>
-        <button class="btn btn-outline-success btn-custom" onclick="updatePrice('val2', 1)">القيمة كاملة (1.0)</button>
+        <h5 class="mb-3">خصم نقطه البيع (val2)</h5>
+        <button class="btn btn-outline-danger btn-custom" onclick="updatePrice('val2', 0)">ايقاف الخصم</button>
+        <button class="btn btn-outline-success btn-custom" onclick="updatePrice('val2', 1)">تفعيل الخصم</button>
     </div>
     
     <div id="status" class="mt-3 text-muted"></div>
 </div>
 
 <script>
-    // ضع رابط السكربت الخاص بك هنا
+    // رابط السكربت الخاص بك
     const scriptUrl = "https://script.google.com/macros/s/AKfycbzu42wjal5fTgG5bJ1yqLCXva8yFt9gaFzmua1Pa5BSRc-wiFpGW4-hRnS1zcM4F8kaMg/exec";
 
     function updatePrice(param, value) {
         const statusDiv = document.getElementById('status');
         statusDiv.innerText = "جاري التحديث...";
         
-        // نفتح السكربت في خلفية الصفحة (iframe مخفي أو fetch)
+        // إرسال الطلب في الخلفية
         fetch(`${scriptUrl}?${param}=${value}`, { mode: 'no-cors' })
         .then(() => {
-            statusDiv.innerHTML = `<span class="text-success">تم تحديث ${param} إلى ${value} بنجاح ✅</span>`;
+            statusDiv.innerHTML = `<div class="alert alert-success">تم تحديث ${param} إلى ${value} بنجاح ✅</div>`;
         })
         .catch(err => {
-            statusDiv.innerHTML = `<span class="text-danger">حدث خطأ في الاتصال ❌</span>`;
+            statusDiv.innerHTML = `<div class="alert alert-danger">حدث خطأ في الاتصال ❌</div>`;
         });
     }
 </script>
